@@ -31,68 +31,138 @@ public class router
 	
 	public static String shortestPath(int n, int[][] distMatrix, char start, char end)
 	{
-		int sNode = Character.getNumericValue(start) - 10;
-		int eNode = Character.getNumericValue(end) - 10;
-		char[][] prev = new char[n][n];
-		double[][] dist = new double[n][n];
+		int currNode = Character.getNumericValue(start)-10;
+		int eNode = Character.getNumericValue(end)-10; 
+		char[] prev = new char[n];
+		double[] dist = new double[n];
 		String shortPath = "";
 		String alphabet = "ABCDEFHIJKLMNOPQRSTUVWXYZ";
 		String tempList = alphabet.substring(0, n);
 		char[] nodeList = tempList.toCharArray();
-		char[] nodesPassed = new char[n];
+		Stack nodeStack = new Stack();
+		Stack distStack = new Stack();
+		Stack prevStack = new Stack();
 		boolean stillLooking = true;
+		
+		dist[currNode] = 0;
 		
 		//Dijkstra initialization
 		
-		// Wow, this code is garbage... scrap & restart time!
+		
 		for(int i = 0; i < n; i++)
 		{
-			if(distMatrix[sNode][i] == -1)
-				dist[sNode][i] = Double.POSITIVE_INFINITY;
+			if(distMatrix[currNode][i] == -1)
+			{
+				if(currNode == i)
+				{
+					dist[i] = 0;
+					prev[i] = '.';
+				}
+				else
+					dist[i] = Double.POSITIVE_INFINITY;
+			}
 			else
 			{
-				dist[sNode][i] = distMatrix[sNode][i];
-				prev[sNode][i] = start;
+				dist[i] = distMatrix[currNode][i];
+				prev[i] = start;
 			}
 		}
 		
+		//System.out.println("Init \ndist: " + Arrays.toString(dist) + "\nprev "  + Arrays.toString(prev) + "EndInit\n\n");	
 		
-		nodeList[sNode] = ' ';
-		nodesPassed[0] = start;
+		nodeStack.push(nodeList[currNode]);
+		distStack.push(dist[currNode]);
+		prevStack.push(prev[currNode]);
 		
-		int count = 0;
 		int minIndex = 0;
-		while(!stillLooking)
+		
+		// Loop to set Stacks
+		
+		while(nodeStack.size() < n)
 		{
-			
-			for(int i = 0; i < n; i ++)
+			//get min index
+			for(int i = 0; i < n; i++)
 			{
-				if(dist[count][minIndex] > dist[count][i])
+				if((dist[minIndex] > dist[i]) || dist[minIndex] <= 0)
 					minIndex = i;
 			}
-			count++;
+			System.out.println("Min Index: " + minIndex);
+			System.out.println("dist: " + Arrays.toString(dist) + "\nprev "  + Arrays.toString(prev));
 			
-			nodesPassed[count] = nodeList[minIndex];
-			nodeList[minIndex] = ' ';
+			
+			currNode = minIndex; 
+			//System.out.println("\n" + nodeList[currNode] + "\n");
+			
+			nodeStack.push(nodeList[currNode]);
+			distStack.push(dist[currNode]);
+			prevStack.push(prev[currNode]);
+			
+			//System.out.println("nodeStack: " + nodeList[currNode] + "\n" +
+			//					"distStack: " + dist[currNode] + "\n" +
+			//					"prevStack: " + prev[currNode] + "\n\n");
+			
+			// update arrays
+			dist[currNode] = 0;
+			prev[currNode] = '.';
+			
+			// update 
 			
 			for(int i = 0; i < n; i++)
 			{
-				if((dist[count-1][i] > (dist[count-1][minIndex] + distMatrix[minIndex][i])) && distMatrix[minIndex][i] >= 0)
+				if(distMatrix[currNode][i] > 0 && distMatrix[currNode][i] < dist[i])
 				{
-					dist[count][i] = dist[count-1][minIndex] + distMatrix[minIndex][i];
-					prev[count][]
+						dist[i] = (Double) distStack.peek() + distMatrix[currNode][i];
+						prev[i] = nodeList[i];
 				}
-				else
-				{
-					dist[count][i] = dist[count-1][i];
-				}
+
 			}
-			
 		}
 		
-		return Integer.toString(sNode);
+		String pathOutput = "";
+		char currentCharacter = end;
+		
+		while(nodeStack.peek().toString().charAt(0) != start)
+		{
+			
+			if(nodeStack.peek().toString().charAt(0) == currentCharacter)
+			{
+				pathOutput = pathOutput + nodeStack.pop() + " ";
+				currentCharacter = prevStack.pop().toString().charAt(0);
+			}
+			else
+			{
+				nodeStack.pop();
+				prevStack.pop();
+			}
+	
+		}
+		
+		pathOutput = pathOutput + start + "";
+		
+			
+		
+		//System.out.println(nodeStack.size());
+		
+		return pathOutput;
 	}
 	
 }
 
+
+
+
+
+/*
+ 
+ 
+5
+-1,5,10,-1,-1
+5,-1,-1,1,-1
+10,-1,-1,3,1
+-1,1,3,-1,10
+-1,-1,1,10,-1
+A C
+ 
+ 
+ * */
 

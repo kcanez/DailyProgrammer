@@ -13,10 +13,6 @@ public class MirrorEncryption
 		try 
 		{
 			getMatrix();
-			
-			
-			
-			
 		} 
 		catch (IOException e) 
 		{
@@ -28,17 +24,24 @@ public class MirrorEncryption
 	public static char getLetter(char startingLetter)
 	{
 		
-		
-		
+
 		return 'a';
 	}
+	
+	public static int findLetter(char charToFind)
+	{
+		
+		
+		return 5;
+	}
+	
 	
 	public static void getMatrix() throws IOException
 	{
 		String top = "abcdefghijklm"; // top matrix[0][1]
 		String left = "ABCDEFGHIJKLM"; // left matrix[1][0]
-		String right = "NOPQRSTUVWXYZ";
-		String bottom = "nopqrstuvwxyz";
+		String bottom = "NOPQRSTUVWXYZ";
+		String right = "nopqrstuvwxyz";
 		int count = 1;
 		
 		while(count < 14)
